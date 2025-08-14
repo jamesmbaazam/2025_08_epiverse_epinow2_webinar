@@ -1,0 +1,665 @@
+---
+title: "TRACEing EpiNow2"
+subtitle: "Forecasting infectious disease trends with EpiNow2"
+author: "Dr. James Mba Azam"
+date: "Aug 14, 2025"
+institute: "Research Software Engineer <br> Epiverse-TRACE Initiative, London School of Hygiene & Tropical Medicine"
+slide-number: true
+logo: "images/logos_combined.png"
+format: revealjs
+theme: "night"
+editor: visual
+code-line-numbers: true
+execute:
+  echo: true
+  eval: true
+---
+
+## Background {transition="fade-in"}
+
+::: columns
+::: {.column style="font-size: 100%;"}
+* During outbreaks, monitoring and evaluation depend on available reported data (cases, hospitalisations, deaths, etc).
+
+* [But]{style="color:red"} ... reported data often tip of the iceberg.
+:::
+
+::: {.column}
+![](images/mpox_trends.png){width=150% .lightbox}
+:::
+:::
+
+---
+
+## Issues with reported data {transition="fade-in"}
+
+![Data delays must be accounted for. Source: [Gostic et al., 2020](https://doi.org/10.1371/journal.pcbi.1009679)](images/data_issues_gostic_et_al_2020.png){width=150%}
+
+## Using $R_t$ for better outbreak monitoring and evaluation {style="font-size: 85%;" transition="fade-in"}
+
+* [Time-varying reproduction number, $R_t$]{style="color:red"}: average number of secondary infections caused by each infectious individual at time $t$ in a population where some individuals [may not be susceptible]{style="color:yellow"}.
+
+* $R_t$ can:
+    - [account for delays]{style="color:yellow"}, and
+    - [reveal variations]{style="color:yellow"} in transmissibility.
+
+* $R_t$ used to [retrospectively and in real-time]{style="color:yellow"} assess whether an epidemic is increasing, decreasing, or steady.
+
+
+## How do we estimate $R_t$? {transition="fade-in"}
+
+<div style="text-align:center;">
+<div style="border: 2px solid #facc15; border-radius: 4px; padding: 1em; background-color: rgba(250, 204, 21, 0.1); display: inline-block;">
+\begin{equation}
+R_t = \dfrac{I_t}{\sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}}
+\end{equation}
+</div>
+</div>
+
+* Requires:
+    - [**reported cases**]{style="color:yellow"}, $I$, and
+    - [**Generation time distribution**]{style="color:yellow"}, $g(\theta)$: time between primary and secondary infection
+
+* Implemented in `{EpiNow2}` and other packages.
+
+# Introducing EpiNow2 {transition="fade-in"}
+
+![](images/epinow2_logo.png){width=150% .shadow fig-align="right"}
+
+## What does EpiNow2 do? {transition="fade-in"}
+
+* [Estimates]{style="color:#a855f7"}/[forecasts]{style="color:#facc15"}:
+    - infections,
+    - time-varying reproduction number ($R_t$),
+    - secondary outcomes (hospitalisations, deaths, etc)
+    - growth rate and doubling time
+    
+* [Simulates]{style="color:	#ef4444"}:
+    - infection trajectories,
+    - secondary outcomes (hospitalisations, deaths, etc)
+
+## EpiNow2 implements $R_t$ estimation best practices {transition="fade-in"}
+
+::: columns
+::: {.column style="font-size:80%;"}
+* Adjusts for [delays]{style="color:yellow"} and [right truncation]{style="color:yellow"}
+* Accounts for [incomplete data]{style="color:yellow"}
+* Uncertainty in [generation time distribution]{style="color:yellow"}
+* Appropriate [smoothing windows]{style="color:yellow"}
+:::
+
+::: {.column}
+![Source: [Gostic et al., 2020](https://doi.org/10.1371/journal.pcbi.1009679)](images/practical_considerations_paper.png){.shadow}
+:::
+:::
+
+## `{EpiNow2}` under the hood {transition="fade-in"}
+
+* Workhorse: [Stan]{style="color:yellow"}
+    - Two `Stan` backends: `{rstan}` and `{cmdstanr}`
+    -  Model fitting with `stan`'s [MCMC]{style="color:yellow"} algorithms
+* Faster but unstable non-MCMC methods (variational inference, laplace, and pathfinder)
+
+# EpiNow2's model functions {transition="fade-in"}
+
+## [Estimation]{style="color:#facc15"} functions {transition="fade-in"}
+
+- `estimate_infections()`: estimate infections and $R_t$ from reported cases
+- `estimate_secondary()`: estimate secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases)
+- `estimate_truncation()`: estimate right truncation distribution from vintage/snapshot data for nowcasting
+
+## [Forecasting]{style="color:#facc15"} functions {transition="fade-in"}
+
+- `forecast_infections()`: forecast infections trajectories
+- `forecast_secondary()`: forecast secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases)
+
+## [Simulation]{style="color:#facc15"} functions {transition="fade-in"}
+
+- `simulate_infections()`: simulate infections and $R_t$ from reported cases
+- `simulate_secondary()`: simulate secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases)
+
+# General workflow {transition="fade-in"}
+
+## Inputs (data)
+
+- `data.frame` of observations.
+
+```{r}
+#| label: example-confirmed-data
+#| echo: false
+
+# load the EpiNow2 package
+library(EpiNow2)
+# get example case counts
+head(example_confirmed)
+```
+
+## Inputs (other arguments)
+
+* Most arguments specified as distributions.
+
+* With `_opts()` function:
+    - generation time distribution: `generation_time_opts()`/`gt_opts()`
+    - delay distribution: `delays_opts()`
+    - observation model: `obs_opts()`
+
+---
+
+* Distributions specified using `EpiNow2's` [bespoke distribution interface]{style="color:yellow"}: 
+    - `Normal()`,
+    - `LogNormal()`,
+    - `Gamma()`,
+    - `Fixed()`, and
+    - `NonParametric()`
+
+## Example uncertain distribution {transition="fade-in"}
+
+```{r}
+#| label: example-uncertain-distribution
+#| echo: true
+#| warning: false
+#| cache: true
+#| code-line-steps: 1|2|3
+#| fig-align: "center"
+
+library(EpiNow2)
+
+# Specify an uncertain distribution
+dist_uncertain <- Gamma(
+  shape = Normal(1.3, 0.3),
+  rate = Normal(0.37, 0.09),
+  max = 14
+)
+
+# Plot the uncertain distribution
+plot(dist_uncertain)
+```
+
+## Example certain distribution {transition="fade-in"}
+
+```{r}
+#| label: generation-time-distribution-certain
+#| echo: true
+#| warning: false
+#| cache: true
+#| fig-align: "center"
+
+library(EpiNow2)
+
+# Specify a certain distribution
+dist_certain <- Gamma(
+  shape = 1,
+  rate = 1,
+  max = 14
+)
+# Plot the distribution
+plot(dist_certain)
+```
+
+# Models showcase {transition="fade-in"}
+
+# `estimate_infections()`: estimate infections and $R_t$ from reported cases {transition="fade-in" style="font-size: 80%"}
+
+## Underlying models
+    
+* Mechanistic model (Renewal equations model)
+
+<div style="text-align:center;">
+<div style="border: 2px solid #facc15; border-radius: 4px; padding: 1em; background-color: rgba(250, 204, 21, 0.1); display: inline-block;">
+\begin{equation}
+I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
+\end{equation}
+</div>
+</div>
+
+* Non-mechanistic/direct infections model:
+    - Removes prior on $R_t$ time evolution.
+---
+
+## Function signature {transition="fade-in"}
+
+![](images/estimate_infections_function_reference.png){width=150% fig-align="center"}
+
+---
+
+## Workflow {transition="fade-in"}
+
+```{r}
+#| label: estimate-infections-workflow
+#| echo: true
+#| eval: false
+#| code-line-numbers: true
+#| code-line-steps: 2|4|6-8|10-12|14-16|18-20
+#| revealjs: {highlight: "line-by-line"}
+
+# load the EpiNow2 package
+library(EpiNow2)
+
+# Setup cores for parallel processing
+options(mc.cores = min(parallel::detectCores(), 4))
+
+# get example case counts
+reported_cases <- example_confirmed[1:60]
+
+# set an example generation time. In practice this should use an estimate
+# from the literature or be estimated from data
+generation_time <- Gamma(
+  shape = Normal(1.3, 0.3),
+  rate = Normal(0.37, 0.09),
+  max = 14
+)
+# set an example incubation period. In practice this should use an estimate
+# from the literature or be estimated from data
+incubation_period <- LogNormal(
+  meanlog = Normal(1.6, 0.06),
+  sdlog = Normal(0.4, 0.07),
+  max = 14
+)
+# set an example reporting delay. In practice this should use an estimate
+# from the literature or be estimated from data
+reporting_delay <- LogNormal(mean = 2, sd = 1, max = 10)
+
+# set an example prior for the reproduction number
+rt_prior <- LogNormal(mean = 2, sd = 0.1)
+
+# for more examples, see the "estimate_infections examples" vignette
+estimate_infections_res <- estimate_infections(
+    reported_cases,
+    generation_time = gt_opts(generation_time),
+    delays = delay_opts(incubation_period + reporting_delay),
+    rt = rt_opts(prior = rt_prior)
+)
+```
+
+## Output (summary) {transition="fade-in"}
+
+```{r}
+#| label: estimate-infections-plot
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+
+estimate_infections_res <- readRDS("data/example_estimate_infections.rds")
+```
+
+```{r}
+#| label: estimate-infections-output-summary
+#| warning: false
+#| cache: true
+#| echo: true
+
+# print the summary of the output
+summary(estimate_infections_res)
+```
+
+## Output (Plots) {transition="fade-in"}
+
+- Note: Plots are `ggplot2` objects, so can be customised
+
+```{r}
+#| label: estimate-infections-output-plots
+#| warning: false
+#| cache: true
+#| code-line-numbers: false
+plot(estimate_infections_res)
+```
+
+## The default model is customisable {transition="fade-in"}
+
+- Notable:
+    - Non-mechanistic/direct infections model, set `rt = NULL`
+    - Turn off Gaussian process, set `gp = NULL`
+    - Don't adjust for delays (default), equivalent to `{EpiEstim}` model
+
+## Using the non-mechanistic model {transition="fade-in"}
+
+```{r}
+#| label: estimate-infections-non-mechanistic
+#| echo: true
+#| eval: false
+#| code-line-numbers: true
+
+# load the EpiNow2 package
+library(EpiNow2)
+
+# Setup cores for parallel processing
+options(mc.cores = min(parallel::detectCores(), 4))
+
+# for more examples, see the "estimate_infections examples" vignette
+estimate_infections_nm_res <- estimate_infections(
+    reported_cases,
+    generation_time = gt_opts(generation_time),
+    delays = delay_opts(incubation_period + reporting_delay),
+    rt = NULL # non-mechanistic/direct infections model
+)
+```
+
+## Output (summary) {transition="fade-in"}
+
+```{r}
+#| label: load-estimate-infections-nm-data
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+
+estimate_infections_nm_res <- readRDS("data/example_estimate_infections_non_mechanistic.rds")
+```
+
+```{r}
+#| label: estimate-infections-nm-summary
+#| warning: false
+#| cache: true
+#| echo: true
+
+# print the summary of the output
+summary(estimate_infections_nm_res)
+```
+
+---
+
+```{r}
+#| label: estimate-infections-nm-plot
+#| warning: false
+#| cache: true
+#| echo: true
+#| eval: true
+#| code-line-numbers: false
+
+# print the summary of the output
+plot(estimate_infections_nm_res)
+```
+
+## Modelling temporally aggregated data {transition="fade-in"}
+
+* `{EpiNow2}` can also model temporally aggregated data, e.g., weekly or monthly counts.
+
+*  Data needs to have an `accumulate` column.
+    * `fill_missing()` helper function to generate data compatible with the package.
+
+---
+
+```{r}
+#| label: aggregated-data-example
+#| echo: true
+#| eval: true
+#| code-line-numbers: true
+
+# load the EpiNow2 package
+library(EpiNow2)
+library(ggplot2)
+
+# Setup cores for parallel processing
+options(mc.cores = min(parallel::detectCores(), 4))
+
+# Load example weekly case counts
+
+cases_weekly <- readRDS("data/example_aggregate_data.rds")
+
+# Visualise the data
+p <- ggplot(cases_weekly, aes(x = date, y = confirm)) +
+    geom_col() +
+    scale_y_continuous(labels = scales::comma) +
+    scale_x_date(date_labels = "%b-%d", date_breaks = "2 weeks") +
+    labs(title = "Weekly case counts", x = "Date", y = "Cases")
+```
+
+---
+
+```{r}
+#| label: aggregated-data-example-plot
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+#| fig-align: "center"
+#| fig-attrs: {class="shadow"}
+
+print(p)
+```
+
+---
+
+```{r}
+#| label: aggregated-data-example-show-data
+#| echo: true
+#| eval: true
+#| code-line-numbers: true
+# Create compatible data for EpiNow2
+cases_weekly_complete <- fill_missing(
+    cases_weekly,
+    missing_dates = "accumulate",
+    missing_obs = "accumulate"
+)
+
+head(cases_weekly_complete, 10)
+```
+
+---
+
+```{r}
+#| label: aggregated-data-example-model-setup
+#| echo: true
+#| eval: false
+#| code-line-numbers: true
+weekly_est <- estimate_infections(
+    cases_weekly_complete,
+    generation_time = gt_opts(generation_time),
+    delays = delay_opts(incubation_period + reporting_delay),
+    rt = rt_opts(prior = rt_prior)
+)
+```
+
+
+## Output (summary) {transition="fade-in"}
+
+```{r}
+#| label: load-estimate-infections-aggregate-estimates
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+
+weekly_est <- readRDS("data/example_estimate_infections_weekly.rds")
+```
+
+```{r}
+#| label: estimate-infections-aggregate-summary
+#| warning: false
+#| cache: true
+#| echo: true
+
+# print the summary of the output
+summary(weekly_est)
+```
+
+---
+
+```{r}
+#| label: estimate-infections-aggregate-plot
+#| warning: false
+#| cache: true
+#| echo: true
+#| code-line-numbers: false
+
+# print the summary of the output
+plot(weekly_est)
+```
+
+# `estimate_secondary()`: estimate secondary observations from primary observations {transition="fade-in" style="font-size: 80%"}
+
+## Function signature {transition="fade-in"}
+
+![](images/estimate_secondary_function_reference.png){width=150% fig-align="center"}
+
+## Workflow {transition="fade-in"}
+
+- [Incidence]{style="color:yellow"} relationship, e.g., deaths from cases.
+```{r}
+#| label: estimate-secondary-workflow-incidence
+#| echo: true
+#| eval: true
+#| code-line-numbers: false
+
+# load packages
+library(data.table)
+library(EpiNow2)
+
+# Setup cores for parallel processing
+options(mc.cores = min(parallel::detectCores(), 4))
+
+#### Incidence data example ####
+
+# Load example secondary incidence data
+es_inc_cases <- readRDS("data/example_secondary_incidence_data.rds")
+head(es_inc_cases)
+```
+
+---
+
+```{r}
+#| label: estimate-secondary-workflow-incidence-mdoel-setup
+#| echo: true
+#| eval: true
+#| code-line-numbers: true
+#| 
+# fit model to example data specifying a weak prior for fraction reported
+# with a secondary case
+es_inc_example <- estimate_secondary(
+    data = es_inc_cases[1:60],
+    secondary = secondary_opts(type = "incidence"),
+    obs = obs_opts(
+        scale = Normal(mean = 0.2, sd = 0.2),
+        week_effect = FALSE
+    )
+)
+```
+
+## Output (Plots) {transition="fade-in"}
+
+```{r}
+#| label: estimate-secondary-plot-incidence
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+
+es_inc_res <- readRDS("data/example_estimate_secondary_incidence_res.rds")
+```
+
+```{r}
+#| label: estimate-secondary-inc-output-plots
+#| warning: false
+#| cache: true
+#| code-line-numbers: false
+
+plot(es_inc_res)
+```
+
+---
+
+- [Prevalence]{style="color:yellow"} relationship, e.g., hospital admissions from cases.
+```{r}
+#| label: estimate-secondary-workflow-prevalence
+#| echo: true
+#| eval: true
+#| code-line-numbers: false
+
+# load packages
+library(data.table)
+library(EpiNow2)
+
+# Setup cores for parallel processing
+options(mc.cores = min(parallel::detectCores(), 4))
+
+#### Prevalence data example ####
+
+# Load example secondary prevalence data
+es_prev_cases <- readRDS("data/example_secondary_prevalence_data.rds")
+head(es_prev_cases)
+```
+
+---
+
+```{r}
+#| label: estimate-secondary-workflow-prevalence-model-setup
+#| echo: true
+#| eval: false
+#| code-line-numbers: true
+# fit model to example data specifying a weak prior for fraction reported
+# with a secondary case
+es_prev_example <- estimate_secondary(
+    data = es_prev_cases[1:60],
+    secondary = secondary_opts(type = "prevalence"),
+    obs = obs_opts(
+        scale = Normal(mean = 0.2, sd = 0.2),
+        week_effect = FALSE
+    )
+)
+```
+
+## Output (Plots) {transition="fade-in"}
+
+```{r}
+#| label: estimate-secondary-plot-prevalence
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 4
+
+es_prev_res <- readRDS("data/example_estimate_secondary_prevalence.rds")
+```
+
+```{r}
+#| label: estimate-secondary-prev-output-plots
+#| warning: false
+#| cache: true
+#| code-line-numbers: false
+plot(es_prev_res)
+```
+
+## Summary {transition="fade-in"}
+
+- `{EpiNow2}` provides a flexible and powerful framework for estimating $R_t$ and forecasting infectious disease trends.
+<!-- - It implements best practices for $R_t$ estimation, including accounting for delays and right truncation. -->
+
+---
+
+- The package supports both mechanistic and non-mechanistic models, allowing users to choose the best approach for their data.
+<!-- - `{EpiNow2}` can also estimate secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases). -->
+<!-- - The package is built on `Stan`, providing robust and efficient model fitting capabilities. -->
+
+## [Key take home]{style="color:yellow"}
+
+* Go beyond the defaults
+* Explore various optimisations:
+    - cores,
+    - non-default models, etc 
+
+## Resources {transition="fade-in"}
+
+- [EpiNow2 website](https://epiforecasts.github.io/EpiNow2):
+    - Function reference, with examples
+    - Vignettes: model definitions, workflow, model options, etc
+    - Many applications in outbreak analytics (e.g., Kelly's talk)
+    
+## Acknowledgements {transition="fade-in"}
+
+* `{EpiNow2}` core developers:
+    - Prof. Sebastian Funk
+    - Dr. Sam Abbott
+* `{EpiNow2}` contributors
+* The Epiverse-TRACE and epiforecasts teams
+
+---
+
+::: {.fragment style="font-size: 200%"}
+Thank you!
+:::
+
+::: {.fragment style="font-size: 200%"}
+Questions?
+:::
+
+---

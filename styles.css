@@ -1,0 +1,8 @@
+/* Ensure images in columns never overflow */
+.reveal .columns img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* optional: center the image */
+}
+
