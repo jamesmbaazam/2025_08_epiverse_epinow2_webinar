@@ -720,8 +720,8 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 
 </div>
 <img data-src="index_files/figure-revealjs/estimate-infections-output-plots-1.png" width="960" class="r-stretch"></section>
-<section id="note-the-default-model-is-customisablestylecoloryellow" class="slide level2" data-transition="fade-in">
-<h2><span style="color:red">Note:</span> the default model is [customisable]{style:“color:yellow”}</h2>
+<section id="note-the-default-model-is-customisable" class="slide level2" data-transition="fade-in">
+<h2><span style="color:red">Note:</span> the default model is <span style="color:yellow">customisable</span></h2>
 <ul>
 <li>Notable:
 <ul>
@@ -773,13 +773,13 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 
 </div>
 <img data-src="index_files/figure-revealjs/estimate-infections-nm-plot-1.png" width="960" class="r-stretch"></section>
-<section id="modelling-temporally-aggregated-data" class="slide level2" data-transition="fade-in">
-<h2>Modelling temporally aggregated data</h2>
+<section id="modelling-temporally-aggregated-weekly-monthly-etc-data" class="slide level2" data-transition="fade-in">
+<h2>Modelling <span style="color:yellow">temporally aggregated (weekly, monthly, etc)</span> data</h2>
 <ul>
 <li><p><code>{EpiNow2}</code> can also model temporally aggregated data, e.g., weekly or monthly counts.</p></li>
 <li><p>Data needs to have an <code>accumulate</code> column.</p>
 <ul>
-<li><code>fill_missing()</code> helper function to generate data compatible with the package.</li>
+<li>Use <code>fill_missing()</code> helper function to add <code>accumulate</code> column.</li>
 </ul></li>
 </ul>
 </section>
@@ -864,10 +864,10 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 </div>
 </div>
 </section>
-<section class="slide level2">
-
+<section id="output-plot" class="slide level2" data-transition="fade-in">
+<h2>Output (plot)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># print the summary of the output</span></span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the output</span></span>
 <span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(weekly_est)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
@@ -926,8 +926,8 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 <span id="cb21-10"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="output-plots-1" class="slide level2" data-transition="fade-in">
-<h2>Output (Plots)</h2>
+<section id="output-plot-1" class="slide level2" data-transition="fade-in">
+<h2>Output (plot)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(es_inc_res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
@@ -978,8 +978,8 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 <span id="cb25-10"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="output-plots-2" class="slide level2" data-transition="fade-in">
-<h2>Output (Plots)</h2>
+<section id="output-plot-2" class="slide level2" data-transition="fade-in">
+<h2>Output (plot)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(es_prev_res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 

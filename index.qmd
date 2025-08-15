@@ -305,7 +305,7 @@ summary(estimate_infections_res)
 plot(estimate_infections_res)
 ```
 
-## [Note:]{style="color:red"} the default model is [customisable]{style:"color:yellow"} {transition="fade-in"}
+## [Note:]{style="color:red"} the default model is [customisable]{style="color:yellow"} {transition="fade-in"}
 
 - Notable:
     - Non-mechanistic/direct infections model, set `rt = NULL`
@@ -371,12 +371,12 @@ summary(estimate_infections_nm_res)
 plot(estimate_infections_nm_res)
 ```
 
-## Modelling temporally aggregated data {transition="fade-in"}
+## Modelling [temporally aggregated (weekly, monthly, etc)]{style="color:yellow"} data {transition="fade-in"}
 
 * `{EpiNow2}` can also model temporally aggregated data, e.g., weekly or monthly counts.
 
 *  Data needs to have an `accumulate` column.
-    * `fill_missing()` helper function to generate data compatible with the package.
+    * Use `fill_missing()` helper function to add `accumulate` column.
 
 ---
 
@@ -474,7 +474,7 @@ weekly_est <- readRDS("data/example_estimate_infections_weekly.rds")
 summary(weekly_est)
 ```
 
----
+## Output (plot) {transition="fade-in"}
 
 ```{r}
 #| label: estimate-infections-aggregate-plot
@@ -483,7 +483,7 @@ summary(weekly_est)
 #| echo: true
 #| code-line-numbers: false
 
-# print the summary of the output
+# Plot the output
 plot(weekly_est)
 ```
 
@@ -536,7 +536,7 @@ es_inc_example <- estimate_secondary(
 )
 ```
 
-## Output (Plots) {transition="fade-in"}
+## Output (plot) {transition="fade-in"}
 
 ```{r}
 #| label: estimate-secondary-plot-incidence
@@ -599,7 +599,7 @@ es_prev_example <- estimate_secondary(
 )
 ```
 
-## Output (Plots) {transition="fade-in"}
+## Output (plot) {transition="fade-in"}
 
 ```{r}
 #| label: estimate-secondary-plot-prevalence
