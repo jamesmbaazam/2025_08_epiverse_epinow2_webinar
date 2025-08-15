@@ -1,6 +1,6 @@
 ---
-title: "TRACEing [EpiNow2]{style="color:yellow"}"
-subtitle: "Forecasting infectious disease trends with EpiNow2"
+title: "TRACEing <span style='color:yellow'>EpiNow2</span>"
+subtitle: "<span style='color:#FFD700'>Estimating and forecasting infectious disease trends with EpiNow2</span>"
 author: "Dr. James Mba Azam"
 date: "Aug 14, 2025"
 institute: "Research Software Engineer <br> Epiverse-TRACE Initiative, London School of Hygiene & Tropical Medicine"
@@ -19,7 +19,7 @@ execute:
 
 ::: columns
 ::: {.column style="font-size: 100%;"}
-* During outbreaks, monitoring and evaluation depend on available reported data (cases, hospitalisations, deaths, etc).
+* During outbreaks, monitoring and evaluation [depend on available reported data]{style="color:yellow"} (cases, hospitalisations, deaths, etc).
 
 * [But]{style="color:red"} ... reported data often tip of the iceberg.
 :::
@@ -305,7 +305,7 @@ summary(estimate_infections_res)
 plot(estimate_infections_res)
 ```
 
-## The default model is customisable {transition="fade-in"}
+## [Note:]{style="color:red"} the default model is [customisable]{style:"color:yellow"} {transition="fade-in"}
 
 - Notable:
     - Non-mechanistic/direct infections model, set `rt = NULL`
