@@ -140,7 +140,7 @@ head(example_confirmed)
 
 * With `_opts()` function:
     - generation time distribution: `generation_time_opts()`/`gt_opts()`
-    - delay distribution: `delays_opts()`
+    - delay distribution: `delay_opts()`
     - observation model: `obs_opts()`
 
 ---
