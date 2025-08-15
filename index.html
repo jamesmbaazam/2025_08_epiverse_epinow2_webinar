@@ -395,8 +395,8 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">TRACEing EpiNow2</h1>
-  <p class="subtitle">Forecasting infectious disease trends with EpiNow2</p>
+  <h1 class="title">TRACEing <span style="color:yellow">EpiNow2</span></h1>
+  <p class="subtitle"><span style="color:#FFD700">Estimating and forecasting infectious disease trends with EpiNow2</span></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -416,7 +416,7 @@ Dr.&nbsp;James Mba Azam
 <div class="columns">
 <div class="column" style="font-size: 100%;">
 <ul>
-<li><p>During outbreaks, monitoring and evaluation depend on available reported data (cases, hospitalisations, deaths, etc).</p></li>
+<li><p>During outbreaks, monitoring and evaluation <span style="color:yellow">depend on available reported data</span> (cases, hospitalisations, deaths, etc).</p></li>
 <li><p><span style="color:red">But</span> … reported data often tip of the iceberg.</p></li>
 </ul>
 </div><div class="column">
@@ -568,7 +568,7 @@ R_t = \dfrac{I_t}{\sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \ta
 <li><p>With <code>_opts()</code> function:</p>
 <ul>
 <li>generation time distribution: <code>generation_time_opts()</code>/<code>gt_opts()</code></li>
-<li>delay distribution: <code>delays_opts()</code></li>
+<li>delay distribution: <code>delay_opts()</code></li>
 <li>observation model: <code>obs_opts()</code></li>
 </ul></li>
 </ul>
@@ -711,7 +711,7 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 </div>
 </section>
 <section id="output-plots" class="slide level2" data-transition="fade-in">
-<h2>Output (Plots)</h2>
+<h2>Output (plots)</h2>
 <ul>
 <li>Note: Plots are <code>ggplot2</code> objects, so can be customised</li>
 </ul>
@@ -720,8 +720,8 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 
 </div>
 <img data-src="index_files/figure-revealjs/estimate-infections-output-plots-1.png" width="960" class="r-stretch"></section>
-<section id="the-default-model-is-customisable" class="slide level2" data-transition="fade-in">
-<h2>The default model is customisable</h2>
+<section id="note-the-default-model-is-customisablestylecoloryellow" class="slide level2" data-transition="fade-in">
+<h2><span style="color:red">Note:</span> the default model is [customisable]{style:“color:yellow”}</h2>
 <ul>
 <li>Notable:
 <ul>
@@ -768,7 +768,7 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># print the summary of the output</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the output</span></span>
 <span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(estimate_infections_nm_res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
@@ -988,13 +988,18 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 <section id="summary" class="slide level2" data-transition="fade-in">
 <h2>Summary</h2>
 <ul>
-<li><code>{EpiNow2}</code> provides a flexible and powerful framework for estimating <span class="math inline">\(R_t\)</span> and forecasting infectious disease trends. <!-- - It implements best practices for $R_t$ estimation, including accounting for delays and right truncation. --></li>
+<li><p><code>{EpiNow2}</code> provides a flexible and powerful framework for estimating <span class="math inline">\(R_t\)</span> and forecasting infectious disease trends.</p></li>
+<li><p>Package supports various customisations:</p>
+<ul>
+<li>Models can be <span style="color:yellow">mechanistic</span> or <span style="color:yellow">non-mechanistic</span> models.</li>
+<li>Accounts for <span style="color:yellow">delays</span>, <span style="color:yellow">right truncation</span>, and <span style="color:yellow">propagation of uncertainty in estimates</span>.</li>
+</ul></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li>The package supports both mechanistic and non-mechanistic models, allowing users to choose the best approach for their data. <!-- - `{EpiNow2}` can also estimate secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases). --> <!-- - The package is built on `Stan`, providing robust and efficient model fitting capabilities. --></li>
+<li>This walk through covered estimation functions but not forecasting or simulation functions, which follow similar workflows.</li>
 </ul>
 </section>
 <section id="key-take-home" class="slide level2">
@@ -1003,7 +1008,7 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
 <li>Go beyond the defaults</li>
 <li>Explore various optimisations:
 <ul>
-<li>cores,</li>
+<li>Computer hardware (cores),</li>
 <li>non-default models, etc</li>
 </ul></li>
 </ul>
@@ -1484,7 +1489,7 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
       }
     });
     </script>
-    <script>var lightboxQuarto = GLightbox({"loop":false,"openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","descPosition":"bottom"});
+    <script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","loop":false,"descPosition":"bottom","openEffect":"zoom"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {
