@@ -453,7 +453,7 @@ R_t = \dfrac{I_t}{\sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \ta
 <li>Requires:
 <ul>
 <li><span style="color:yellow"><strong>reported cases</strong></span>, <span class="math inline">\(I\)</span>, and</li>
-<li><span style="color:yellow"><strong>Generation time distribution</strong></span>, <span class="math inline">\(g(\theta)\)</span>: time between primary and secondary infection</li>
+<li><span style="color:yellow"><strong>generation time distribution</strong></span>, <span class="math inline">\(g(\theta)\)</span>: time between primary and secondary infection</li>
 </ul></li>
 <li>Implemented in <code>{EpiNow2}</code> and other packages.</li>
 </ul>
@@ -1489,7 +1489,7 @@ I_t = R_t \sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \tau}
       }
     });
     </script>
-    <script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","loop":false,"closeEffect":"zoom","openEffect":"zoom"});
+    <script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","loop":false,"openEffect":"zoom","descPosition":"bottom"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {

@@ -58,7 +58,7 @@ R_t = \dfrac{I_t}{\sum_{\tau = 1}^{g_\mathrm{max}} g(\tau | \theta_g) I_{t - \ta
 
 * Requires:
     - [**reported cases**]{style="color:yellow"}, $I$, and
-    - [**Generation time distribution**]{style="color:yellow"}, $g(\theta)$: time between primary and secondary infection
+    - [**generation time distribution**]{style="color:yellow"}, $g(\theta)$: time between primary and secondary infection
 
 * Implemented in `{EpiNow2}` and other packages.
 
