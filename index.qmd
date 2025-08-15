@@ -1,5 +1,5 @@
 ---
-title: "TRACEing EpiNow2"
+title: "TRACEing [EpiNow2]{style="color:yellow"}"
 subtitle: "Forecasting infectious disease trends with EpiNow2"
 author: "Dr. James Mba Azam"
 date: "Aug 14, 2025"
