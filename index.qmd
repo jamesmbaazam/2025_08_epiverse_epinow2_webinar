@@ -293,7 +293,7 @@ estimate_infections_res <- readRDS("data/example_estimate_infections.rds")
 summary(estimate_infections_res)
 ```
 
-## Output (Plots) {transition="fade-in"}
+## Output (plots) {transition="fade-in"}
 
 - Note: Plots are `ggplot2` objects, so can be customised
 
@@ -367,7 +367,7 @@ summary(estimate_infections_nm_res)
 #| eval: true
 #| code-line-numbers: false
 
-# print the summary of the output
+# plot the output
 plot(estimate_infections_nm_res)
 ```
 
@@ -621,20 +621,20 @@ plot(es_prev_res)
 
 ## Summary {transition="fade-in"}
 
-- `{EpiNow2}` provides a flexible and powerful framework for estimating $R_t$ and forecasting infectious disease trends.
-<!-- - It implements best practices for $R_t$ estimation, including accounting for delays and right truncation. -->
+* `{EpiNow2}` provides a flexible and powerful framework for estimating $R_t$ and forecasting infectious disease trends.
 
+* Package supports various customisations:
+    * Models can be [mechanistic]{style="color:yellow"} or [non-mechanistic]{style="color:yellow"} models.
+    * Accounts for [delays]{style="color:yellow"}, [right truncation]{style="color:yellow"}, and [propagation of uncertainty in estimates]{style="color:yellow"}.
 ---
 
-- The package supports both mechanistic and non-mechanistic models, allowing users to choose the best approach for their data.
-<!-- - `{EpiNow2}` can also estimate secondary outcomes (hospitalisations, deaths, etc) from primary observations (cases). -->
-<!-- - The package is built on `Stan`, providing robust and efficient model fitting capabilities. -->
+* This walk through covered estimation functions but not forecasting or simulation functions, which follow similar workflows.
 
 ## [Key take home]{style="color:yellow"}
 
 * Go beyond the defaults
 * Explore various optimisations:
-    - cores,
+    - Computer hardware (cores),
     - non-default models, etc 
 
 ## Resources {transition="fade-in"}
